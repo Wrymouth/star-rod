@@ -131,22 +131,16 @@ public class StringEncoder
 			String name = "";
 
 			if (unit.declaration.numTokens() == 3) {
-				if (!declareLine.getString(2).matches("\\(.+\\)"))
-					throw new InputFileException(declareLine, "String ID could not be parsed: %n%s", declareLine.trimmedInput());
-
-				section = declareLine.getHex(1);
-				name = declareLine.getString(2);
-				name = name.substring(1, name.length() - 1);
-			}
-			// LEGACY SUPPORT: #message | #string : section : index : (name)
-			else if (unit.declaration.numTokens() == 4) {
-				if (!declareLine.getString(3).matches("\\(.+\\)"))
-					throw new InputFileException(declareLine, "String name could not be parsed: %n%s", declareLine.trimmedInput());
-
-				section = declareLine.getHex(1);
-				index = declareLine.getHex(2);
-				name = declareLine.getString(3);
-				name = name.substring(1, name.length() - 1);
+				if (!declareLine.getString(2).matches("\\(.+\\)")) {
+					// LEGACY SUPPORT: #message | #string : section : index
+					section = declareLine.getHex(1);
+					index = declareLine.getHex(2);
+				}
+				else {
+					section = declareLine.getHex(1);
+					name = declareLine.getString(2);
+					name = name.substring(1, name.length() - 1);
+				}
 			}
 			else {
 				throw new InputFileException(declareLine, "String declaration could not be parsed: %n%s", declareLine.trimmedInput());
